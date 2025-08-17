@@ -76,6 +76,7 @@ def preprocess_question(text, tfidf_matrix):
     :param tfidf_matrix: matrix of corpus
     :return: top5 questions from corpus based on cosine similarity
     """
+    vectorizer = load('cache/vectorizer.joblib')
     text = preprocessdf.preprocess(text)
     vec = vectorizer.transform([text])
     cosine_similarities = cosine_similarity(vec, tfidf_matrix).flatten()
@@ -84,9 +85,12 @@ def preprocess_question(text, tfidf_matrix):
 
 
 if __name__ == "__main__":
-    df_SS = pd.read_csv('../PreprocessStackSample.csv')
-    df_sample = df_SS.sample(200)
-    df_KSS, tfidf_matrix_SS = tf_idf_questions(df_sample)
+    df_SS = pd.read_json('../small_pss.json', lines=True)
+    print('readed')
+    df_sample = df_SS.sample(10)
+    print('sample')
+    df_KSS, tfidf_matrix_SS, vect = tf_idf_questions(df_sample)
+    print('tf-idf')
     natural_lang_question = input("Your question: ")
     top5_questions = preprocess_question(natural_lang_question, tfidf_matrix_SS)
     print(top5_questions)
